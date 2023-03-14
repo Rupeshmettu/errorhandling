@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="raise_errorFlow" doc:id="f6ce86f0-b52d-446f-acf2-a6d938fdaeb3" >
+		<http:listener doc:name="Listener" doc:id="c9e901d7-0f86-4881-acb9-88f1649ef773" config-ref="HTTP_Listener_config" path="/employee"/>
+		<choice doc:name="Choice" doc:id="bbe6f73d-10e8-4708-854e-7d8844043c78" >
+			<when expression='#[payload.accountType == "savings" or payload.accountType == "credit" or payload.accountType =="current"]'>
+				<set-payload value="#['successful']" doc:name="Set Payload" doc:id="31b3b554-cd2b-484e-910c-9412acd8a942" />
+			</when>
+			<otherwise >
+				<raise-error doc:name="Raise error" doc:id="d40ff5de-3977-4651-8605-e24cb2807a3d" type="ACCOUNT:INVALID_ACCOUNT" description="ACCOUNT is invalid" />
+				<logger level="INFO" doc:name="Logger" doc:id="fbbd1797-65c3-48fd-b198-7a9665e190cb" />
+			</otherwise>
+		</choice>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b25ea401-37f1-4680-be92-3a509e18b580">
+			<set-payload value='#["please enter a valid account type"]' doc:name="Set Payload" doc:id="09d2e2bc-302f-407d-bcb1-28ba10a8f725" />
+		</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

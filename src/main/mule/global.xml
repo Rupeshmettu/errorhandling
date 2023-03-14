@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="globalFlow" doc:id="bc149173-9d7b-477b-9bb1-f517f694845f" >
+		<http:listener doc:name="Listener" doc:id="46920b36-5d96-418e-95d6-6c096afcafde" config-ref="HTTP_Listener_config" path="/global"/>
+		<set-payload value="payload" doc:name="Set Payload" doc:id="97c06389-d862-4399-b294-d16249f2b4c9" />
+		<try doc:name="Try" doc:id="231ebce8-c865-499f-9a44-74d357c864ef" >
+			<validation:is-number doc:name="Is number" doc:id="4fbf65be-8256-4c15-a8c5-6b10c666288d" config-ref="Validation_Config" value="payload" numberType="INTEGER"/>
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="542c0177-d69b-4331-8cca-e914bc3e0ea0" >
+					<set-payload value="payload on error propagate" doc:name="Set Payload" doc:id="4e53e3c8-efd2-40f0-b038-368dfb724e1b" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<set-payload value="payload" doc:name="Set Payload" doc:id="5bfbd80d-c3d6-468d-95ad-ff0d0e5b6637" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b640166e-96e0-448d-ac46-dbe03d4691a8" >
+				<set-payload value="payload on ec" doc:name="Set Payload" doc:id="6d2cb401-3d98-437e-9110-2f4886b0ea5f" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="40043674-d076-449b-823b-2597c939eee1" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="49b8a229-7482-4feb-a922-f9079de10b1b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="flowreferenceFlow" doc:id="0e1f6419-0609-4386-8fb9-a3a3193820bd" >
+		<http:listener doc:name="Listener" doc:id="6533313f-fde7-45b9-9b3a-a296208aeceb" config-ref="HTTP_Listener_config" path="/flow reference">
+			<http:error-response statusCode="#[vars.httpstatus default 500]" />
+		</http:listener>
+		<set-payload value="error" doc:name="error" doc:id="c6d926b7-df36-40c3-8cc7-1f873dc6dcce" />
+		<flow-ref doc:name="Flow Reference" doc:id="d41d4962-c8fc-481d-9a7d-3d01404797c5" name="flowreferenceFlow1"/>
+		<set-payload value="success main flow" doc:name="success main flow" doc:id="39ee61e8-0184-4da8-bda2-e3bea63f2761" />
+	</flow>
+	<flow name="flowreferenceFlow1" doc:id="9f79809e-c2de-4939-98ca-48605168808c" >
+		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="c949a4cd-2d66-427c-8d0b-f239b967e7bb" config-ref="Validation_Config" value="payload"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c85378d2-059b-411b-986f-5714062fdc5c" >
+				<set-payload value="success subflow" doc:name="success subflow" doc:id="8bd97f3f-555d-4e40-ba5c-72b72bccfc77" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="Copy_of_flowreferenceFlow" doc:id="30c74c9d-8112-4ed0-9ab9-825889914f08" >
+		<validation:is-number numberType="INTEGER" doc:name="Copy_of_Is number" doc:id="5bb4e1c9-918c-4f10-b176-a8ff826cf18c" config-ref="Validation_Config" value="payload" />
+		<error-handler>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="624abbd2-77ea-4804-b302-85905d954ef2" >
+				<logger level="INFO" doc:name="Logger" doc:id="f5a017ab-b282-4f0f-876b-307dc6bfcb7a" />
+				<set-variable value="400" doc:name="Set Variable" doc:id="b9334bea-b705-4928-bc9d-836bff330faa" variableName="httpstatus"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="flowreferenceFlow2" doc:id="3c876039-4d82-4df8-89dd-7d6088bae546" >
+		<http:listener doc:name="Listener" doc:id="33a87cad-142c-4966-a2ac-59a6f0284abe" config-ref="HTTP_Listener_config" path="/tryscope"/>
+		<set-payload value="payload" doc:name="Set Payload" doc:id="aca9a214-6a4c-4a45-9464-42e8d7b1158f" />
+		<try doc:name="Try" doc:id="ff222306-d6f0-4435-b205-edfebf890b74" >
+			<validation:is-number numberType="INTEGER" doc:name="Copy_of_Is number" doc:id="b1dbad59-9299-4c6e-9a47-5f1eca375d29" config-ref="Validation_Config" value="payload" />
+			<error-handler>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="28608ccb-b28c-4e65-b813-b2c097e32995" type="ANY">
+					<set-payload value="payload on ecc" doc:name="Set Payload" doc:id="1ea6a517-070c-4c89-804b-14cf60c8d20a" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<set-payload value="success try scope" doc:name="Set Payload" doc:id="d767e8b1-f518-45bd-a849-64e2517d9849" />
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a97e772b-1799-458e-9daa-4747750f44d7" >
+				<set-payload value="payload" doc:name="Set Payload" doc:id="2e100541-9ad5-4420-9356-fa9809331175" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="cache_scopeFlow" doc:id="4805dd63-54ee-4795-8915-3548c2cfa9de" >
+		<http:listener doc:name="Listener" doc:id="a5854c8a-3232-4eee-9b13-20f7cc24a4cb" config-ref="HTTP_Listener_config" path="/cachescope"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e9d4f092-e5a9-4b40-bdd0-331600dca90c" message="before cache scope ....."/>
+		<ee:cache doc:name="Cache" doc:id="353b4149-b07b-4d5a-b62e-43bf3bcb06f5" >
+			<flow-ref doc:name="Flow Reference" doc:id="c575cda8-8161-4802-94ec-3b4136e794ab" name="cache_scopeFlow1"/>
+		</ee:cache>
+		<logger level="INFO" doc:name="Logger" doc:id="00fd9880-dc93-43c7-9e3e-7d3d8de74f93" message="rupesh"/>
+	</flow>
+	<flow name="cache_scopeFlow1" doc:id="9cec65a4-1e74-4ae5-bba0-2a2d23ccf3c1" >
+		<set-payload value="after cache scope....." doc:name="Set Payload" doc:id="41ea79bc-9cfa-4634-b598-6268c388a6c0" />
+		<logger level="INFO" doc:name="Logger" doc:id="8365b389-7f93-4232-a5d8-a29989660115" message="#[payload]"/>
+	</flow>
+</mule>
